@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/api/*"
+  to = "http://ec2-13-239-33-227.ap-southeast-2.compute.amazonaws.com:3001/api/:splat"
+  status = 200
+  force = true
+  headers = {X-From-Netlify = "true"}
+
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
