@@ -46,4 +46,17 @@ export class HeartbeatController {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+  public getHeartbeatStatus = (req: Request, res: Response): void => {
+    const heartbeatData = [];
+    
+    for (let i = 1; i <= 5; i++) {
+        heartbeatData.push({ 
+            service_id: i,
+            seconds_since_last: Math.floor(Math.random() * 30)
+        });
+    }
+    
+    res.json({ heartbeats: heartbeatData });
+  }
 }
