@@ -7,6 +7,45 @@ import { logger } from './utils/logger';
 const app = express();
 const port = 3001;
 
+const allowedOrigins = [
+    'https://spainymatrix.xyz',
+    'https://www.spainymatrix.xyz',
+    'http://localhost',
+    'http://localhost:3001'
+];
+
+const corsOptions = {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) {
+            callback(null, true);
+            return;
+        }
+        
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.log('Blocked origin:', origin);
+            callback(null, false);
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// Add security headers
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
+
 // Request logging middleware
 app.use((req, res, next) => {
   logger.request(req);
@@ -23,24 +62,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Simplified CORS configuration
-app.use(cors({
-  origin: [
-    'http://localhost:3001',
-    'http://localhost',
-    'http://ec2-13-239-33-227.ap-southeast-2.compute.amazonaws.com:3001'
-  ],
-  optionsSuccessStatus: 200
-}));
-
-app.use(express.json());
-
 // Register routes
 app.use('/api/heartbeat', heartbeatRoutes);
 app.use('/api/transactions', transactionRoutes);
 
 // Start HTTP server
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   logger.info(`Server running on http://localhost:${port}`);
 });
 
