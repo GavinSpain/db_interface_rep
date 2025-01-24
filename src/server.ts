@@ -63,7 +63,7 @@ app.use((req, res, next) => {
 });
 
 // Register routes
-app.use('/api/heartbeat', heartbeatRoutes);
+app.use('/api', heartbeatRoutes);
 app.use('/api/transactions', transactionRoutes);
 
 // Start HTTP server
