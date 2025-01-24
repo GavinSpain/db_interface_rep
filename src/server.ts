@@ -59,6 +59,24 @@ app.use((req, res, next) => {
 app.use('/api', heartbeatRoutes);
 app.use('/api/transactions', transactionRoutes);
 
+app.get('/api/heartbeatstatus', (_req, res) => {
+    const heartbeatData = [];
+    
+    for (let i = 1; i <= 5; i++) {
+        heartbeatData.push({ 
+            service_id: i,
+            seconds_since_last: Math.floor(Math.random() * 30)
+        });
+    }
+    
+    const response = {
+        heartbeats: heartbeatData
+    };
+
+    logger.info('Sending response:', response);
+    res.json(response);
+});
+
 // Start HTTP server
 app.listen(port, '0.0.0.0', () => {
   logger.info(`Server running on http://localhost:${port}`);
